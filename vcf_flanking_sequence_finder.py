@@ -9,6 +9,7 @@ Created on Sat Feb 27 11:21:33 2021
 import allel
 import numpy as np
 import pandas as pd
+import fastaparser
 
 # .vcf file >>> SNPs location info:
 filepath = '/media/alina/ESD-USB/test_vcf/test_1.vcf.gz'
@@ -41,10 +42,14 @@ sub_df.to_csv(path_or_buf=sub_df_filepath, index=False)
 
 data = pd.read_csv('sub_df.csv') # len(data) : 1318305
 
-### NEXT: access fasta file with genome data
 
+data.loc[0, 'REF'] # >>> THERE'S A 182 str HERE ?????
+data['REF'] # to access all ref SNPs 
+data['POS'] # to access all positions of interest
 
+# finf position x >>> check that SNPx == 'REF'/'ALT' >>> get 5'- and 3'-
 
+### TO DO: access fasta file with genome data
 
 
 ### check memory availavility:
@@ -53,7 +58,16 @@ data = pd.read_csv('sub_df.csv') # len(data) : 1318305
     
 ### CLI arguments:
     ### https://www.tutorialspoint.com/python/python_command_line_arguments.htm
-    
+
+### to deal with the fastaparser deprecation warning:
+    ### https://stackoverflow.com/questions/54379418/how-to-assuredly-suppress-a-deprecationwarning-in-python
+
+### numpy broadcast? vectorization?:
+    ### https://stackoverflow.com/questions/5197650/broadcasting-a-python-function-on-to-numpy-arrays
+    ### https://www.experfy.com/blog/bigdata-cloud/why-you-should-forget-loops-and-embrace-vectorization-for-data-science/
+
+######################################################################
+######################################################################
 
 ### for each SNP:
     ### get SNP's position from vcf_df
@@ -61,7 +75,7 @@ data = pd.read_csv('sub_df.csv') # len(data) : 1318305
     ### find 5-flank-seq and 3-flank-seq and store them in dict: (50pb each)
         ### k:v {SNP-POS:{5f: seq}}
         ##### after searching all SNPs in the fasta file, 
-        ##### I should have a dict like this:
+        ##### I should have a dict like this: (Do I really need this dict?)
             
             # snp_flanks_dict = {'SNP_ID 1/ POS': {'SNP-5': "5' flanking seq  as str",
             #                                     'SNP-3': "3' flanking seq  as str"},
@@ -71,8 +85,69 @@ data = pd.read_csv('sub_df.csv') # len(data) : 1318305
             #                                     'SNP-3': "3' flanking seq  as str"}
             #                    }
 
+
 ### create pd.df columns: CHROM, SNP_POS, 5'-FlankSeq[A/G]3'-FlankSeq as a single str  
 
+######################################################################
+######################################################################
+
+# Here I'm developing the function to find the flanking sequences,
+# 50 bp each side, NNNNNNNNNNNNNNN[ref_SNP/alt_SNP]NNNNNNNNNNNNNNN
+# REORGANIZE AND REMOVE:
+
+# at4g37870_fasta
+fasta_filepath = '/home/alina/Learning_to_Code/My_Projects/vcf/at4g37870.fna'
+
+import fastaparser
+
+
+with open(fasta_filepath) as fasta_file:    # code from:
+    parser = fastaparser.Reader(fasta_file) # https://pypi.org/project/fastaparser/
+    for seq in parser:
+        # seq is a FastaSequence object
+        print('ID:', seq.id)
+        print('Description:', seq.description)
+        print('Sequence:', seq.sequence_as_string())
+        print()
+
+seq = seq.sequence_as_string()
+len(seq) # 2583
+ref_snp = seq[150] # 'T' >>> I will use this as my ref SNP
+ref_pos = 150
+alt_snp = 'N'
+flanking_5 = seq[(ref_pos - 50):ref_pos]
+flanking_3 = seq[(ref_pos + 1): ref_pos + 51]
+# this is what the result string should look like:
+result_str = 'CGGTTCATTATTAACCATGGTTCTAAAAATCTAACCTTTAAAAAACCACT[T/N]TCGCTTCTCTTCACATTCGCATCATTTTGTATCATCCCTTGAAAACGTTA'
+
+
+def assemble_result_str(ref_snp, alt_snp, flanking_5, flanking_3):
+    """
+    (str, str, str, str) -> str
+    
+    ref_snp : str
+        DESCRIPTION: 1 character (A, T, G or C), the reference SNP.
+    alt_snp : str
+        DESCRIPTION: 1 character (A, T, G or C), the variant SNP.
+    flanking_5 : str
+        DESCRIPTION: 50 characters (A, T, G or C), the 50 bp upstream from ref_snp.
+    flanking_3 : str
+        DESCRIPTION: 50 characters (A, T, G or C), the 50 bp downstream from ref_snp.
+
+    Returns a new str, the reference SNP concatenated with its variant 
+    and its flanking sequences, like this:
+        
+        XXXXXXXXXXXXXXX[T/C]XXXXXXXXXXXXXXX
+        ref_snp = 'T'
+        alt_snp = 'C'
+        50 bp = XXXXXXXXXXXXXXX
+    
+    """
+    return flanking_5 + '[' + ref_snp + '/' + alt_snp + ']' + flanking_3
+
+x = assemble_result_str(ref_snp, alt_snp, flanking_5, flanking_3)
+
+result_str == x # True
 
 
 
@@ -86,6 +161,22 @@ data = pd.read_csv('sub_df.csv') # len(data) : 1318305
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+######################################################################
+######################################################################
+
+# this was my first try, REMOVE LATER:
 
 raw_data = allel.read_vcf(filepath)
 
