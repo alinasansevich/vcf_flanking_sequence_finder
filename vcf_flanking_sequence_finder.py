@@ -14,7 +14,7 @@ import fastaparser
 # .vcf file >>> SNPs location info:
 filepath = '/media/alina/ESD-USB/test_vcf/test_1.vcf.gz'
 
-# extract data from .vcf and store it in a pd.df:
+# extract data from .vcf and store it in a pd.dataframe:
 raw_df = allel.vcf_to_dataframe(filepath, fields='*')
 
 raw_df.head() # REMOVE THIS
@@ -32,7 +32,7 @@ raw_df.columns # REMOVE THIS
 # extract target columns: 'CHROM', 'POS', 'REF', 'ALT_1' #### 'ALT_2', 'ALT_3'???
 sub_df = raw_df[['CHROM', 'POS', 'REF', 'ALT_1']]
 
-del raw_df # REMOVE THIS?
+del raw_df # REMOVE THIS? would removing it release memory?
 
 # I create a .csv to continue developing without collapsing my laptop's memory
 ####### # REMOVE THIS
@@ -47,24 +47,10 @@ data.loc[0, 'REF'] # >>> THERE'S A 182 str HERE ?????
 data['REF'] # to access all ref SNPs 
 data['POS'] # to access all positions of interest
 
-# finf position x >>> check that SNPx == 'REF'/'ALT' >>> get 5'- and 3'-
-
+### NEXT:
 ### TO DO: access fasta file with genome data
 
 
-### check memory availavility:
-    ### https://pypi.org/project/psutil/
-    ### https://stackoverflow.com/questions/276052/how-to-get-current-cpu-and-ram-usage-in-python
-    
-### CLI arguments:
-    ### https://www.tutorialspoint.com/python/python_command_line_arguments.htm
-
-### to deal with the fastaparser deprecation warning:
-    ### https://stackoverflow.com/questions/54379418/how-to-assuredly-suppress-a-deprecationwarning-in-python
-
-### numpy broadcast? vectorization?:
-    ### https://stackoverflow.com/questions/5197650/broadcasting-a-python-function-on-to-numpy-arrays
-    ### https://www.experfy.com/blog/bigdata-cloud/why-you-should-forget-loops-and-embrace-vectorization-for-data-science/
 
 ######################################################################
 ######################################################################
@@ -76,6 +62,7 @@ data['POS'] # to access all positions of interest
         ### k:v {SNP-POS:{5f: seq}}
         ##### after searching all SNPs in the fasta file, 
         ##### I should have a dict like this: (Do I really need this dict?)
+        ##### or maybe a df?
             
             # snp_flanks_dict = {'SNP_ID 1/ POS': {'SNP-5': "5' flanking seq  as str",
             #                                     'SNP-3': "3' flanking seq  as str"},
@@ -84,22 +71,44 @@ data['POS'] # to access all positions of interest
             #                    'SNP_ID 3/ POS': {'SNP-5': "5' flanking seq  as str",
             #                                     'SNP-3': "3' flanking seq  as str"}
             #                    }
+            
+            # snp_flanks_df:
+                # 6 columns:
+                # CHROM - POS - 5' flanking seq  as str - REF - ALT - 3' flanking seq  as str
+                
+            # then I could create pd.final_df
+                
+### create pd.final_df, 3 columns: CHROM, SNP_POS, 5'-FlankSeq[A/G]3'-FlankSeq as a single str  
+
+######
+
+### REORGANIZE THE DIFFERENT STEPS IN DIFFERENT MODULES:
+# 1 >>> open .vcf, get 4 columns >>> DONE
+
+# 2 >>> get snps position from vcf:
+    
+    # data['POS'] >>> snps positions are in this column
+    
+    # find SNP in chromosome in .fna file >>> can I use df.apply for this??????
+    # https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.apply.html
+        # check that SNPx == 'REF'/'ALT'!
+    
+# 3 >>> find 5-flank-seq and 3-flank-seq and store them in dict/df (50pb each)
+
+# 4 >>> create pd.final_df, 3 columns: CHROM, SNP_POS, 5'-FlankSeq[A/G]3'-FlankSeq as a single str
 
 
-### create pd.df columns: CHROM, SNP_POS, 5'-FlankSeq[A/G]3'-FlankSeq as a single str  
+
+
 
 ######################################################################
 ######################################################################
 
 # Here I'm developing the function to find the flanking sequences,
 # 50 bp each side, NNNNNNNNNNNNNNN[ref_SNP/alt_SNP]NNNNNNNNNNNNNNN
-# REORGANIZE AND REMOVE:
 
 # at4g37870_fasta
 fasta_filepath = '/home/alina/Learning_to_Code/My_Projects/vcf/at4g37870.fna'
-
-import fastaparser
-
 
 with open(fasta_filepath) as fasta_file:    # code from:
     parser = fastaparser.Reader(fasta_file) # https://pypi.org/project/fastaparser/
@@ -137,10 +146,12 @@ def assemble_result_str(ref_snp, alt_snp, flanking_5, flanking_3):
     Returns a new str, the reference SNP concatenated with its variant 
     and its flanking sequences, like this:
         
-        XXXXXXXXXXXXXXX[T/C]XXXXXXXXXXXXXXX
         ref_snp = 'T'
         alt_snp = 'C'
-        50 bp = XXXXXXXXXXXXXXX
+        50 bp = 'XXXXXXXXXXXXXXX'
+        
+        'XXXXXXXXXXXXXXX[T/C]XXXXXXXXXXXXXXX'
+
     
     """
     return flanking_5 + '[' + ref_snp + '/' + alt_snp + ']' + flanking_3
@@ -222,5 +233,18 @@ df = pd.DataFrame({'chrom': chrom, 'pos': pos, 'ref': ref, 'alt': alt})
 
 
 
+### extras:
 
+### check memory availavility:
+    ### https://pypi.org/project/psutil/
+    ### https://stackoverflow.com/questions/276052/how-to-get-current-cpu-and-ram-usage-in-python
+    
+### CLI arguments:
+    ### https://www.tutorialspoint.com/python/python_command_line_arguments.htm
 
+### to deal with the fastaparser deprecation warning:
+    ### https://stackoverflow.com/questions/54379418/how-to-assuredly-suppress-a-deprecationwarning-in-python
+
+### numpy broadcast? vectorization?:
+    ### https://stackoverflow.com/questions/5197650/broadcasting-a-python-function-on-to-numpy-arrays
+    ### https://www.experfy.com/blog/bigdata-cloud/why-you-should-forget-loops-and-embrace-vectorization-for-data-science/
