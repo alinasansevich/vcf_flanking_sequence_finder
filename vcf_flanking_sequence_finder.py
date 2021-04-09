@@ -34,9 +34,7 @@ sub_df = raw_df[['CHROM', 'POS', 'REF', 'ALT_1']]
 
 del raw_df # REMOVE THIS? would removing it release memory?
 
-# I create a .csv to continue developing without collapsing my laptop's memory
-####### # REMOVE THIS
-
+# I create a .csv to continue developing without collapsing my laptop's memory ####### # REMOVE THIS?
 sub_df_filepath = '/home/alina/Learning_to_Code/My_Projects/vcf/sub_df.csv'
 sub_df.to_csv(path_or_buf=sub_df_filepath, index=False)
 
@@ -47,10 +45,40 @@ data.loc[0, 'REF'] # >>> THERE'S A 182 str HERE ?????
 data['REF'] # to access all ref SNPs 
 data['POS'] # to access all positions of interest
 
-### NEXT:
-### TO DO: access fasta file with genome data
+data.head(10)
+# Out[6]: 
+#         CHROM   POS                                                REF ALT_1
+# 0  CM001064.3    58  TTTCGACGATTTTCGTGTGCTATAGCACACCATTTTTTGGGTGATC...     T
+# 1  CM001064.3   303                                                  A    AT
+# 2  CM001064.3   331                                                  A   AAT
+# 3  CM001064.3   923                                                  C    CA
+# 4  CM001064.3  2001                                                  A    AT
+# 5  CM001064.3  2063                                                  G    GA
+# 6  CM001064.3  6838                                                  T   TAA
+# 7  CM001064.3  6903                                                  C    CT
+# 8  CM001064.3  7632                                                  A    AT
+# 9  CM001064.3  9403                                                  C    CA
 
+# access fasta file with genome data
+genome_filepath = '/media/alina/Pen/Genome/GCA_000188115.3_SL3.0_genomic.fna'
 
+# the following code is from:  https://pypi.org/project/fastaparser/
+
+with open(genome_filepath) as fasta_file:
+    parser = fastaparser.Reader(fasta_file) # Reader object contains all sequences
+    for seq in parser:
+        # seq is a FastaSequence object https://fastaparser.readthedocs.io/en/latest/api_fastasequence/
+        print('ID:', seq.id)
+        print('Description:', seq.description)
+        print('Sequence:', seq.sequence_as_string())
+        print()
+
+# this restarts my kernel...
+# [SpyderKernelApp] WARNING | No such comm: 13f65b6e996911eba94ca763352cc9e7
+# from Stack Overflow:
+    # https://stackoverflow.com/questions/62980313/spyderkernelapp-warning-no-such-comm
+# I'm moving this part of the code to the playground to run it from the terminal
+# I'M HERE!!!
 
 ######################################################################
 ######################################################################
