@@ -7,13 +7,13 @@ Created on Sat Feb 27 11:21:33 2021
 """
 
 import allel
-import numpy as np
+# import numpy as np
 import pandas as pd
 import fastaparser
 
 # .vcf file >>> SNPs location info:
-filepath = '/media/alina/ESD-USB/test_vcf/test_1.vcf.gz'
-
+#filepath = '/media/alina/ESD-USB/test_vcf/test_1.vcf.gz'
+filepath = '/media/alina/Pen/Genome/20219-tomato-snps.vcf.gz'
 # extract data from .vcf and store it in a pd.dataframe:
 raw_df = allel.vcf_to_dataframe(filepath, fields='*')
 
@@ -30,7 +30,7 @@ raw_df.columns # REMOVE THIS
 #       dtype='object')
 
 # extract target columns: 'CHROM', 'POS', 'REF', 'ALT_1' #### 'ALT_2', 'ALT_3'???
-sub_df = raw_df[['CHROM', 'POS', 'REF', 'ALT_1']]
+sub_df = raw_df[['CHROM', 'POS', 'REF', 'ALT_1', 'is_snp']] # I added 'is_snp' to this new df
 
 del raw_df # REMOVE THIS? would removing it release memory?
 
