@@ -6,10 +6,30 @@ Created on Sat Feb 27 11:21:33 2021
 @author: alina
 """
 
-import allel
-# import numpy as np
-import pandas as pd
+# import allel >>> imported in from_vcf_to_df
+# import pandas as pd >>> imported in from_vcf_to_df
 import fastaparser
+
+import from_vcf_to_df as vcf_df # import module
+
+
+
+# .vcf file >>> SNPs location info:   @@@@@@@@@@@@@@@ DELETE LATER
+# @@@@@@@@ LATER: ASK FOR USER INPUT TO GET THE filepath TO THE .vcf
+filepath = '/media/hernan/Pen/Genome/20219-tomato-snps.vcf.gz'
+
+# @@@@@@@@ LATER: ASK FOR USER INPUT TO GET THE filepath TO THE .vcf
+# filepath = input()
+
+raw_df = vcf_df.extract_data_from_vcf(filepath)
+data = vcf_df.create_working_dataframe(raw_df)
+
+# I'M HERE:
+    # check run1.txt
+    # read from genome, search in genome, find flanking sequences
+
+
+
 
 # .vcf file >>> SNPs location info:
 #filepath = '/media/alina/ESD-USB/test_vcf/test_1.vcf.gz'
@@ -58,6 +78,55 @@ data.head(10)
 # 7  CM001064.3  6903                                                  C    CT
 # 8  CM001064.3  7632                                                  A    AT
 # 9  CM001064.3  9403                                                  C    CA
+
+
+
+data = pd.read_csv('sub_df.csv') # USE LATER???
+# should I include something like:
+    # IF sub_df.csv EXISTS >>> data = pd.read_csv('sub_df.csv') 
+    # else create_working_dataframe(raw_df)?
+ 
+
+print(data.columns)
+print(data.head(10))
+print(data.tail(10))
+
+print(raw_df.columns)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 # access fasta file with genome data
 genome_filepath = '/media/alina/Pen/Genome/GCA_000188115.3_SL3.0_genomic.fna'
