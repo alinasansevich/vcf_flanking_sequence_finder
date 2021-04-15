@@ -33,3 +33,11 @@ def create_working_dataframe(raw_df):
     sub_df.to_csv(path_or_buf=sub_df_filepath, index=False)
     
     return sub_df
+
+if __name__ == "__main__":
+    filepath = input("Please enter the absolute filepath to the .vcf file: ")
+    raw_df = extract_data_from_vcf(filepath)
+    data = create_working_dataframe(raw_df)
+    print("All data from columns\n\t'CHROM', \n\t'POS', \n\t'REF', \n\t'ALT_1', \n\t'is_snp' \n from the .vcf file provided is now available as a .csv file,")
+    print("'sub_df.csv', located in the current working directory.")
+   
