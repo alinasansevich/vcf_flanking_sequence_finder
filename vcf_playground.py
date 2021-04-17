@@ -105,5 +105,58 @@ with open(genome_filepath) as fasta_file:
 print(count) # 3148 sequences
 
 
+######################################################################
+######################################################################
+
+# from:
+# https://realpython.com/introduction-to-python-generators/#understanding-the-python-yield-statement
+
+def csv_reader(file_name):
+    for row in open(file_name, "r"):
+        yield row
+
+csv_gen = csv_reader("some_csv.txt")
+row_count = 0
+
+for row in csv_gen:
+    row_count += 1
+
+print(f"Row count is {row_count}")
+
+def infinite_sequence():
+    num = 0
+    while True:
+        yield num
+        num += 1
+
+# CONTINUE READING THIS:
+
+# https://ravinpoudel.github.io/posts/randomgenome_access/
+# https://biopython.org/wiki/SeqIO
+# http://biopython.org/DIST/docs/tutorial/Tutorial.pdf
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
