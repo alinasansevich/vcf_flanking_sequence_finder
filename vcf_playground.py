@@ -6,57 +6,6 @@ Created on Thu Apr  8 14:35:58 2021
 @author: alina
 """
 
-# 1 >>> open .vcf, get 4 columns >>> DONE
-
-# 2 >>> get snps position from vcf:
-    
-    # data['POS'] >>> snps positions are in this column
-    
-    # find SNP in chromosome in .fna file >>> can I use df.apply for this??????
-    # https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.apply.html
-        # check that SNPx == 'REF'/'ALT'!
-    
-# 3 >>> find 5-flank-seq and 3-flank-seq and store them in dict/df (50pb each)
-
-# 4 >>> create pd.final_df, 3 columns: CHROM, SNP_POS, 5'-FlankSeq[A/G]3'-FlankSeq as a single str
-
-######################################################################
-######################################################################
-
-
-######################################################################
-######################################################################
-
-import allel
-# import numpy as np
-import pandas as pd
-#import fastaparser
-
-# .vcf file >>> SNPs location info:
-#filepath = '/media/alina/ESD-USB/test_vcf/test_1.vcf.gz'
-filepath = '/media/hernan/Pen/Genome/20219-tomato-snps.vcf.gz'
-
-# extract data from .vcf and store it in a pd.dataframe:
-raw_df = allel.vcf_to_dataframe(filepath, fields='*')
-
-#raw_df.head() # REMOVE THIS
-#raw_df.columns # REMOVE THIS
-
-sub_df = raw_df[['CHROM', 'POS', 'REF', 'ALT_1', 'is_snp']] # I added 'is_snp' to this new df
-
-sub_df_filepath = '/home/hernan/Desktop/sub_df.csv'
-sub_df.to_csv(path_or_buf=sub_df_filepath, index=False)
-
-######################################################################
-######################################################################
-
-# this is fro the old .vcf, who knows what was in there!!!
-data = pd.read_csv('sub_df_old.csv') # len(data) : 1318305
-
-
-#data.loc[0, 'REF'] # >>> THERE'S A 182 str HERE ?????
-#data['REF'] # to access all ref SNPs 
-#data['POS'] # to access all positions of interest
 ######################################################################
 ######################################################################
 
@@ -104,55 +53,49 @@ with open(genome_filepath) as fasta_file:
 
 print(count) # 3148 sequences
 
-
 ######################################################################
 ######################################################################
 
-# from:
-# https://realpython.com/introduction-to-python-generators/#understanding-the-python-yield-statement
+# I'm here:
 
-def csv_reader(file_name):
-    for row in open(file_name, "r"):
-        yield row
+from Bio.SeqIO.FastaIO import SimpleFastaParser
 
-csv_gen = csv_reader("some_csv.txt")
-row_count = 0
+# filepath = input("Please enter the absolute filepath to the fasta file: ")
+genome_filepath = '/media/alina/Pen/Genome/GCA_000188115.3_SL3.0_genomic.fna'
 
-for row in csv_gen:
-    row_count += 1
+count = 0
+with open(genome_filepath) as handle:
+    for values in SimpleFastaParser(handle):
+        print(values)
+        print(type(values[0]), type(values[1]))
+        count += 1
 
-print(f"Row count is {row_count}")
+print(count) # 3148, class 'str', class 'str'
 
-def infinite_sequence():
-    num = 0
-    while True:
-        yield num
-        num += 1
+# this is a fasta header:
+'>AF372922.1 Arabidopsis thaliana AT4g37870/T28I19_150 mRNA, complete cds'
+# in the values variable from the parser it is the 1st value in a tuple,
+# without the '>'
 
-# CONTINUE READING THIS:
+# # this is the way to access each value in the 'CHROM' column:
+# data.loc[1,'CHROM']
+# Out[9]: 'CM001064.3'
 
-# https://ravinpoudel.github.io/posts/randomgenome_access/
-# https://biopython.org/wiki/SeqIO
-# http://biopython.org/DIST/docs/tutorial/Tutorial.pdf
+# for now, I'll use this:
 
+wip_filepath = '/home/alina/Learning_to_Code/My_Projects/vcf/PCK1.fna'
 
+with open(wip_filepath) as handle:
+    for values in SimpleFastaParser(handle):
+        print(values[0])
 
+# AF372922.1 Arabidopsis thaliana AT4g37870/T28I19_150 mRNA, complete cds
+# AK226329.1 Arabidopsis thaliana mRNA for phosphoenolpyruvate carboxykinase (ATP) -like protein, complete cds, clone: RAFL05-14-F18
+# AL035709.1 Arabidopsis thaliana DNA chromosome 4, BAC clone T28I19 (ESSA project)
+# AL161592.2 Arabidopsis thaliana DNA chromosome 4, contig fragment No. 88
+# AY078035.1 Arabidopsis thaliana AT4g37870/T28I19_150 mRNA, complete cds
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+# continue here, use this to find 'CHROM', find 'POS', etc
 
 
 
