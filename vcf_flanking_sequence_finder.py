@@ -8,7 +8,6 @@ Created on Sat Feb 27 11:21:33 2021
 
 # import allel >>> imported in from_vcf_to_df
 # import pandas as pd >>> imported in from_vcf_to_df
-import fastaparser
 
 import from_vcf_to_df as vcf_df # import module
 
@@ -26,21 +25,6 @@ data = vcf_df.create_working_dataframe(raw_df)
 
 # REMOVE THIS? would removing it release memory?
 # del raw_df <<<<<<<<<<<<<<<<<
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
