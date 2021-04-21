@@ -8,7 +8,7 @@ open .vcf file >>> extract 4 columns ['chomosome', 'position', 'ref snp', 'alt s
 open genome.fasta >>> read with Biopython SimpleFastaParser
 
 for snp in .vcf_df:
-  find in genome DONE
-  get 5'- + 3'- flanking sequences DONE
-  create a result_str = 5'-flanking[REF/ALT]'3-flanking (50bp on each side) DONE 
-  append to final_df (['chomosome', 'position', 'ref snp', 'alt snp', 5'-flanking[REF/ALT]'3-flanking]) DONE
+  find in genome DONE<br>
+  get 5'- + 3'- flanking sequences DONE<br>
+  create a result_str = 5'-flanking[REF/ALT]'3-flanking (50bp on each side) DONE<br>
+  append to final_df (['chomosome', 'position', 'ref snp', 'alt snp', 5'-flanking[REF/ALT]'3-flanking]) DONE<br>
