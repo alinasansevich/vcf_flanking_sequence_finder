@@ -76,6 +76,7 @@ print(count) # 3148, class 'str', class 'str'
 ######################################################################
 ######################################################################
 
+# this is wip:
 
 # this is a fasta header:
 '>AF372922.1 Arabidopsis thaliana AT4g37870/T28I19_150 mRNA, complete cds'
@@ -183,13 +184,6 @@ def assemble_result_str(ref_snp, alt_snp, flanking_5, flanking_3):
 
  
 
-
-
-
-
-
-
-
 ######################################################################
 ######################################################################
 ######################################################################
@@ -202,6 +196,8 @@ def assemble_result_str(ref_snp, alt_snp, flanking_5, flanking_3):
 ######################################################################
 
 # genome_fasta_parser_Bio.py - first BIG run, on BigCompu
+# I printed the flanking sequences to screen, run from 13:49 to 18:30 >>> Ctrl+C
+# last sequence length >>> 25609 >>> it doesn't exist???
 
 from Bio.SeqIO.FastaIO import SimpleFastaParser
 import pandas as pd
@@ -271,7 +267,7 @@ data.head()
 ######################################################################
 
 # genome_fasta_parser_Bio.py - second BIG run, on BigCompu
-
+# I printed the flanking sequences to screen, run from 12:32 to 18:43 >>> Ctrl+C
 
 from Bio.SeqIO.FastaIO import SimpleFastaParser
 import pandas as pd
@@ -395,80 +391,6 @@ data[data['CHROM'] == 'CM001066.3']
 ######################################################################
 ######################################################################
 
-# genome_fasta_parser_Bio.py - first BIG run, on BigCompu
-
-from Bio.SeqIO.FastaIO import SimpleFastaParser
-import pandas as pd
-
-def assemble_result_str(ref_snp, alt_snp, flanking_5, flanking_3):
-    """
-    (str, str, str, str) -> str
-    
-    ref_snp : str
-        DESCRIPTION: 1 character (A, T, G or C), the reference SNP.
-    alt_snp : str
-        DESCRIPTION: 1 character (A, T, G or C), the variant SNP.
-    flanking_5 : str
-        DESCRIPTION: 50 characters (A, T, G or C), the 50 bp upstream from ref_snp.
-    flanking_3 : str
-        DESCRIPTION: 50 characters (A, T, G or C), the 50 bp downstream from ref_snp.
-
-    Returns a new str, the reference SNP concatenated with its variant 
-    and its flanking sequences, like this:
-        
-        ref_snp = 'T'
-        alt_snp = 'C'
-        50 bp = 'XXXXXXXXXXXXXXX'
-        
-        'XXXXXXXXXXXXXXX[T/C]XXXXXXXXXXXXXXX'
-
-    
-    """
-    return flanking_5 + '[' + ref_snp + '/' + alt_snp + ']' + flanking_3
-
-
-genome_filepath = '/media/hernan/Pen/Genome/GCA_000188115.3_SL3.0_genomic.fna'
-
-data = pd.read_csv('sub_df.csv')
-
-flanking_seqs = []
-last_index = 0
-
-with open(genome_filepath) as handle:
-    for fastaseq in SimpleFastaParser(handle): # fastaseq is a tuple ('header', 'sequence')
-        last_index = i
-        for i in range(len(data) - last_index):
-            chrom = data.loc[i, 'CHROM'] # get the chromosome id from df
-            if chrom in fastaseq[0]:
-                # I can find each nucleotide!
-                # print(fastaseq[1][wip_df.loc[i, 'POS']])
-                seq = fastaseq[1]
-                print("Lenght of Sequence: {}".format(len(seq)))
-                ref_snp = data.loc[i, 'REF']
-                ref_pos = data.loc[i, 'POS']
-                alt_snp = data.loc[i, 'ALT_1']
-                if ref_snp == fastaseq[1][ref_pos]:
-                    if ref_pos - 50 < 0:
-                        flanking_5 = seq[:ref_pos]
-                    else:
-                        flanking_5 = seq[(ref_pos - 50):ref_pos]             
-                    flanking_3 = seq[(ref_pos + 1): ref_pos + 51]
-                    flanking_5_3_seq = assemble_result_str(ref_snp, alt_snp, flanking_5, flanking_3)
-                    flanking_seqs.append(flanking_5_3_seq)
-
-data['FLANKING_SEQS'] = flanking_seqs
-
-data.head()
-data.to_csv('/home/hernan/Desktop/at_Big_Compu/SNPs_w_flanking_seqs.csv', index=False)
-
-######################################################################
-######################################################################
-######################################################################
-######################################################################
-
-# genome_fasta_parser_Bio.py - second BIG run, on BigCompu
-# I printed the flanking sequences to screen, run from 12:32 to 18:43 >>> Ctrl+C
-
 # genome_fasta_parser_Bio.py - third BIG run, on BigCompu, without printing to screen
 # Completed everything in 15 minutes! 
 # Got a ValueError when appending to df >>> it really run through everything!
@@ -558,60 +480,80 @@ Traceback (most recent call last):
 ValueError: Length of values (1398800) does not match length of index (10073070)
 Fri 23 Apr 2021 08:15:33 AM CDT
 
+######################################################################
+######################################################################
+######################################################################
+######################################################################
 
+# It extracted 1398800 from the 10073070 SNPs in data
+# >>> only 1398800 meet this condition: if ref_snp == fastaseq[1][ref_pos]:
+# So, now I'll modify the code to accomplish 2 things:
+#     1- Get those 1398800 'SNPs'
+#     2- Get ALL 10073070 'SNPs' and their flanking sequences
+    
+#     From there I want:
+#         * compare run times
+#         * compare final_results file size
+#         * what are those 8674270 'SNPs' >>> is_snp?
 
+##############################     ###################################
 
+# genome_fasta_parser_Bio.py - fourth BIG run, on BigCompu (1.5 of 7.7 GiB)
+# around 15 minutes to run, creates a 188.6 MB .csv file
+# 1- Get those 1398800 'SNPs'
 
+from Bio.SeqIO.FastaIO import SimpleFastaParser
+import pandas as pd
+import datetime
 
+def assemble_result_str(ref_snp, alt_snp, flanking_5, flanking_3):
+    """
+    (str, str, str, str) -> str
+    
+    ref_snp : str
+        DESCRIPTION: 1 character (A, T, G or C), the reference SNP.
+    alt_snp : str
+        DESCRIPTION: 1 character (A, T, G or C), the variant SNP.
+    flanking_5 : str
+        DESCRIPTION: 50 characters (A, T, G or C), the 50 bp upstream from ref_snp.
+    flanking_3 : str
+        DESCRIPTION: 50 characters (A, T, G or C), the 50 bp downstream from ref_snp.
 
+    Returns a new str, the reference SNP concatenated with its variant 
+    and its flanking sequences, like this:
+        
+        ref_snp = 'T'
+        alt_snp = 'C'
+        50 bp = 'XXXXXXXXXXXXXXX'
+        
+        'XXXXXXXXXXXXXXX[T/C]XXXXXXXXXXXXXXX'
 
+    
+    """
+    return flanking_5 + '[' + ref_snp + '/' + alt_snp + ']' + flanking_3
 
+genome_filepath = '/media/hernan/Pen/Genome/GCA_000188115.3_SL3.0_genomic.fna'
 
+data = pd.read_csv('sub_df.csv')
 
-
-
-
-
-
-
-
-
-
-# genome = [char for char in 'abcde']
-# snps = [x for x in range(50)]
-
-# # this will print each char 50 times, I want 10 times each
-# for seq in genome:
-#     for i in range(len(snps)):
-#         print(seq)
-
-# a a a a a a a a a a b  b  b  b  b  b  b  b  b  b
-# 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19
-
-# next_index = 0
-
-# prev_seq = 'a'
-
-# counter = 0
-
-# for seq in genome:
-#     for i in range(len(snps)):
-#         if seq == prev_seq: # if fastaseq[0][:10] == data.loc[i, 'CHROM']:
-#             print(seq)
-#         elif fastaseq[0][:10] == data.loc[i, 'CHROM']
-
+flanking_seqs = []
+chrom_id = []
+pos = []
+ref = []
+alt = []
+is_snp = []
 
 start = 0
-with open(wip_filepath) as handle:
-    counter = 0
+with open(genome_filepath) as handle:
     for fastaseq in SimpleFastaParser(handle): # fastaseq is a tuple ('header', 'sequence')
-        print('\n\n', fastaseq[0])        
-        for i in range(start, len(wip_df)):
-            if fastaseq[0][:10] == wip_df.loc[i, 'CHROM']:
+        print('\n\n', fastaseq[0])
+        print('Current time: ', datetime.datetime.now())
+        for i in range(start, len(data)):
+            if fastaseq[0][:10] == data.loc[i, 'CHROM']:
                 seq = fastaseq[1]
-                ref_snp = wip_df.loc[i, 'REF']
-                ref_pos = wip_df.loc[i, 'POS']
-                alt_snp = wip_df.loc[i, 'ALT_1']
+                ref_snp = data.loc[i, 'REF']
+                ref_pos = data.loc[i, 'POS']
+                alt_snp = data.loc[i, 'ALT_1']
                 # only gets flanking_seqs for those that match this condition
                 if ref_snp == fastaseq[1][ref_pos]:
                     if ref_pos - 50 < 0:
@@ -621,12 +563,40 @@ with open(wip_filepath) as handle:
                     flanking_3 = seq[(ref_pos + 1): ref_pos + 51]
                     flanking_5_3_seq = assemble_result_str(ref_snp, alt_snp, flanking_5, flanking_3)
                     flanking_seqs.append(flanking_5_3_seq)
-                    counter += 1
-                    print(flanking_seqs)
-                    print(counter)
+                    chrom_id.append(data.loc[i, 'CHROM'])
+                    pos.append(ref_pos)
+                    ref.append(ref_snp)
+                    alt.append(alt_snp)
+                    is_snp.append(data.loc[i, 'is_snp'])
+
             else:
                 start = i
                 break
+
+results = {'CHROM': chrom_id,
+            'POS': pos,
+            'REF': ref,
+            'ALT_1': alt,
+            'is_snp': is_snp,
+            'FLANKING_SEQS': flanking_seqs}
+
+results_df = pd.DataFrame.from_dict(results)
+
+print(results_df.head())
+results_df.to_csv('/home/hernan/Desktop/at_Big_Compu/SNPs_w_flanking_seqs.csv', index=False)
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
