@@ -461,13 +461,102 @@ data['FLANKING_SEQS'] = flanking_seqs
 data.head()
 data.to_csv('/home/hernan/Desktop/at_Big_Compu/SNPs_w_flanking_seqs.csv', index=False)
 
+######################################################################
+######################################################################
+######################################################################
+######################################################################
+
+# genome_fasta_parser_Bio.py - second BIG run, on BigCompu
+# I printed the flanking sequences to screen, run from 12:32 to 18:43 >>> Ctrl+C
+
+# genome_fasta_parser_Bio.py - third BIG run, on BigCompu, without printing to screen
+# Completed everything in 15 minutes! 
+# Got a ValueError when appending to df >>> it really run through everything!
+
+from Bio.SeqIO.FastaIO import SimpleFastaParser
+import pandas as pd
+import datetime
+
+def assemble_result_str(ref_snp, alt_snp, flanking_5, flanking_3):
+    """
+    (str, str, str, str) -> str
+    
+    ref_snp : str
+        DESCRIPTION: 1 character (A, T, G or C), the reference SNP.
+    alt_snp : str
+        DESCRIPTION: 1 character (A, T, G or C), the variant SNP.
+    flanking_5 : str
+        DESCRIPTION: 50 characters (A, T, G or C), the 50 bp upstream from ref_snp.
+    flanking_3 : str
+        DESCRIPTION: 50 characters (A, T, G or C), the 50 bp downstream from ref_snp.
+
+    Returns a new str, the reference SNP concatenated with its variant 
+    and its flanking sequences, like this:
+        
+        ref_snp = 'T'
+        alt_snp = 'C'
+        50 bp = 'XXXXXXXXXXXXXXX'
+        
+        'XXXXXXXXXXXXXXX[T/C]XXXXXXXXXXXXXXX'
+
+    
+    """
+    return flanking_5 + '[' + ref_snp + '/' + alt_snp + ']' + flanking_3
 
 
 
+genome_filepath = '/media/hernan/Pen/Genome/GCA_000188115.3_SL3.0_genomic.fna'
 
+data = pd.read_csv('sub_df.csv')
 
+flanking_seqs = []
+   
+start = 0
+with open(genome_filepath) as handle:
+    #counter = 0
+    for fastaseq in SimpleFastaParser(handle): # fastaseq is a tuple ('header', 'sequence')
+        print('\n\n', fastaseq[0])
+        print('Current time: ', datetime.datetime.now())
+        for i in range(start, len(data)):
+            if fastaseq[0][:10] == data.loc[i, 'CHROM']:
+                seq = fastaseq[1]
+                ref_snp = data.loc[i, 'REF']
+                ref_pos = data.loc[i, 'POS']
+                alt_snp = data.loc[i, 'ALT_1']
+                # only gets flanking_seqs for those that match this condition
+                if ref_snp == fastaseq[1][ref_pos]:
+                    if ref_pos - 50 < 0:
+                        flanking_5 = seq[:ref_pos]
+                    else:
+                        flanking_5 = seq[(ref_pos - 50):ref_pos]             
+                    flanking_3 = seq[(ref_pos + 1): ref_pos + 51]
+                    flanking_5_3_seq = assemble_result_str(ref_snp, alt_snp, flanking_5, flanking_3)
+                    flanking_seqs.append(flanking_5_3_seq)
+                    #counter += 1
+                    #print(flanking_seqs)
+                    #print(counter)
+            else:
+                start = i
+                break
 
+data['FLANKING_SEQS'] = flanking_seqs
 
+data.head()
+data.to_csv('/home/hernan/Desktop/at_Big_Compu/SNPs_w_flanking_seqs.csv', index=False)
+
+Traceback (most recent call last):
+  File "genome_fasta_parser_Bio.py", line 67, in <module>
+    data['FLANKING_SEQS'] = flanking_seqs
+  File "/home/hernan/.local/lib/python3.8/site-packages/pandas/core/frame.py", line 3163, in __setitem__
+    self._set_item(key, value)
+  File "/home/hernan/.local/lib/python3.8/site-packages/pandas/core/frame.py", line 3242, in _set_item
+    value = self._sanitize_column(key, value)
+  File "/home/hernan/.local/lib/python3.8/site-packages/pandas/core/frame.py", line 3899, in _sanitize_column
+    value = sanitize_index(value, self.index)
+  File "/home/hernan/.local/lib/python3.8/site-packages/pandas/core/internals/construction.py", line 751, in sanitize_index
+    raise ValueError(
+ValueError: Length of values (1398800) does not match length of index (10073070)
+Fri 23 Apr 2021 08:15:33 AM CDT
 
 
 
