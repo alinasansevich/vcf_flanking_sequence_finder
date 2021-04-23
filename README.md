@@ -1,14 +1,5 @@
 # vcf_flanking_sequence_finder
-Extract data from .vcf, find SNPs in genomic .fasta file and return each SNP with its flanking sequences.
 
-WIP:
+The program extracts several columns ('Chromosome ID', 'Position', 'REF_SNP', 'ALT_SNP', 'is_snp') from a .vcf file (Variant Call Format). It parses a genomic fasta file, searches for SNPs from the .vcf and returns each SNP with its flanking sequences (50 nucleotides on each side).
 
-open .vcf file >>> extract 4 columns ['chomosome', 'position', 'ref snp', 'alt snp'] ONLY for snps (No deletions, insertions, etc.)
-
-open genome.fasta >>> read with Biopython SimpleFastaParser
-
-for snp in .vcf_df:
-  find in genome DONE<br>
-  get 5'- + 3'- flanking sequences DONE<br>
-  create a result_str = 5'-flanking[REF/ALT]'3-flanking (50bp on each side) DONE<br>
-  append to final_df (['chomosome', 'position', 'ref snp', 'alt snp', 5'-flanking[REF/ALT]'3-flanking]) DONE<br>
+It is run from the command line, it informs the user how much memory is needed to save the results and if that memory is available or not.
