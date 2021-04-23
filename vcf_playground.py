@@ -700,3 +700,19 @@ results_df.to_csv('/home/hernan/Desktop/at_Big_Compu/SNPs_w_flanking_seqs_10M.cs
 
 
 
+
+######################################################################
+######################################################################
+
+### extras:
+
+### check memory availavility:
+    ### https://pypi.org/project/psutil/
+    ### https://stackoverflow.com/questions/276052/how-to-get-current-cpu-and-ram-usage-in-python
+    
+### CLI arguments:
+    ### https://www.tutorialspoint.com/python/python_command_line_arguments.htm
+
+### numpy broadcast? vectorization?:
+    ### https://stackoverflow.com/questions/5197650/broadcasting-a-python-function-on-to-numpy-arrays
+    ### https://www.experfy.com/blog/bigdata-cloud/why-you-should-forget-loops-and-embrace-vectorization-for-data-science/
