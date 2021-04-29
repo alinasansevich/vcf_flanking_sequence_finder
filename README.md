@@ -4,7 +4,7 @@ The program extracts several columns ('Chromosome ID', 'Position', 'REF_SNP', 'A
 
 It is run from the command line, it informs the user how much memory is needed to save the results and if that memory is available or not.
 
-*********
+***
 
 
 
@@ -30,3 +30,63 @@ Some VCF files may contain additional columns of data, including FORMAT and SAMP
 
 
 [1]: https://fileinfo.com/extension/vcf
+
+***
+
+
+
+
+https://www.freecodecamp.org/news/how-to-write-a-good-readme-file/
+
+Overview
+Key Topics (bullet list)
+Helpful Links (bullet list)
+Badges (repo status / license / python version?)
+
+***
+
+# Project Title
+
+## Description
+    What your application does,
+    Why you used the technologies you used,
+    Some of the challenges you faced and features you hope to implement in the future.
+
+***
+
+## Add a Table of Contents (Optional)
+
+***
+
+## How to Install Your Project
+If your project is software or an app that needs installation, you should include the steps required to install your project. Provide a step-by-step description of how to get the development environment running.
+
+***
+
+## How to Use Your Project
+Provide instructions and examples so users/contributors can use the project. This will make it easy for them in case they encounter a problem – they will always have a place of reference.
+You can also include screenshots to show examples of the running project.
+
+***
+
+## Include Credits
+If you worked on the project as a team or an organization, list your collaborators/team members. You should also include links to their GitHub profiles.
+Also, if you followed tutorials to build that particular project, include links to those here as well. This is just a way to show your appreciation and also to help others get a first hand copy of the project.
+
+***
+
+## List the License
+This is the last section of most README. It lets other developers know what they can and cannot do with your project. If you need help choosing a license, use https://choosealicense.com/
+
+### THAT'S THE BASICS, NOW SOME GOOD EXTRAS:
+
+## Badges (below the Title? or the Description?)
+
+## How to Contribute to the Project
+If you created an application or package and would like other developers to contribute to it (an open source project), you will want to add guidelines to let them know on how they can contribute to your project.
+The Contributor Covenant and The Contributing guide will give you the help you need when setting up the rules.
+
+## Include Tests
+Go the extra mile and write tests for your application. Then provide code examples and how to run them.
+
+https://github.com/navendu-pottekkat/awesome-readme/blob/master/README-template.md
