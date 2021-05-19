@@ -12,7 +12,7 @@ This format allows the user to catalog variants of a genome without recording th
 ## Description of the Project
 .vcf files are usually very large (Google this), which means that accessing them and working with the information they store can be very memory consuming / not possible for some computers >>> _that's what inspired this project_ >>> finding EVERY SNP WITH ITS FLANKING SEQS TO DESIGN PRIMER FOR IT in the reference genome can be very complicated/time consuming/impossible becase of lack of memory
 
-
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 
 
