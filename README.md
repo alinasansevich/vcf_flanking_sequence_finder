@@ -56,6 +56,13 @@ You can install them following their documentation's instructions.
 
   `~$ python3 from_vcf_to_df.py`
 
+The program will prompt the user to enter the absolute filepath to the .vcf file (__it can also be a compressed file, your-file.vcf.gz__). Example:
+
+  `/media/alina/Pen/file-with-snps-data.vcf.gz`
+
+It will create a .csv file called `sub_df.csv` and print a message to inform the user.
+
+
 - vcf_flanking_sequence_finder: this is the main program, to run it in your terminal type or copy/paste the following line:
 
   `~$ python3 vcf_flanking_sequence_finder.py`
