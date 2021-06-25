@@ -39,35 +39,27 @@ _When will the project be complete?_ The project will be complete once all the M
 
 This project was developed using the following libraries:
 
-@@@@@@@@@@@ requirements.txt: (get versions) @@@@@@@@@@@
+[scikit-allel](https://pypi.org/project/scikit-allel/)
 
-[python 3.7.6](https://www.python.org/downloads/)
+[pandas](https://pandas.pydata.org/pandas-docs/stable/getting_started/install.html)
 
-[scikit-allel 1.3.2](https://pypi.org/project/scikit-allel/)
+[Biopython](https://biopython.org/wiki/Download)
 
-[pandas 1.2.0](https://pandas.pydata.org/pandas-docs/stable/getting_started/install.html)
+You can install them following their documentation's instructions.
 
-[Biopython 1.78](https://biopython.org/wiki/Download)
-
-Install these following their documentation's instructions before running this project.
-
-_If your project is software or an app that needs installation, you should include the steps required to install your project. Provide a step-by-step description of how to get the development environment running._
 ***
 
 ## Usage
 [(Back to top)](#table-of-contents)
 
-- from_vcf_to_df.py: run this module to extract the columns of interest from the .vcf file into a .csv file.
+- from_vcf_to_df.py: run this module to extract the columns of interest from the .vcf file into a .csv file. Simply type or copy/paste the following line:
 
   `~$ python3 from_vcf_to_df.py`
 
-- vcf_flanking_sequence_finder: this is the main program, run it in your terminal@@@@@.
+- vcf_flanking_sequence_finder: this is the main program, to run it in your terminal type or copy/paste the following line:
 
   `~$ python3 vcf_flanking_sequence_finder.py`
 
-
-_Provide instructions and examples so users/contributors can use the project. This will make it easy for them in case they encounter a problem – they will always have a place of reference.
-You can also include screenshots to show examples of the running project._
 ***
 
 ## License
