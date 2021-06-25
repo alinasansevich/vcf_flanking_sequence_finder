@@ -4,10 +4,10 @@
 Created on Wed Apr 14 12:37:58 2021
 
 @author: alina
+
 """
 
 import allel
-import pandas as pd
 import os
 
 def extract_data_from_vcf(filepath):
@@ -16,6 +16,7 @@ def extract_data_from_vcf(filepath):
     returns the dataframe.
     '''
     return allel.vcf_to_dataframe(filepath, fields='*')
+
 
 def create_working_dataframe(raw_df):
     '''
@@ -33,6 +34,7 @@ def create_working_dataframe(raw_df):
     sub_df.to_csv(path_or_buf=sub_df_filepath, index=False)
     
     return sub_df
+
 
 if __name__ == "__main__":
     filepath = input("Please enter the absolute filepath to the .vcf file: ")

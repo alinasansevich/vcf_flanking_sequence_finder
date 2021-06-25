@@ -11,7 +11,7 @@ Created on Sat Feb 27 11:21:33 2021
 
 import from_vcf_to_df as vcf_df # import module
 from Bio.SeqIO.FastaIO import SimpleFastaParser
-import pandas as pd # DO I NEEd THIS HERE?
+import pandas as pd
 import datetime
 
 
@@ -39,24 +39,25 @@ def assemble_result_str(ref_snp, alt_snp, flanking_5, flanking_3):
     return flanking_5 + '[' + ref_snp + '/' + alt_snp + ']' + flanking_3
 
 
-
-# .vcf file >>> SNPs location info:   @@@@@@@@@@@@@@@ DELETE LATER
-# @@@@@@@@ LATER: ASK FOR USER INPUT TO GET THE filepath TO THE .vcf
-filepath = '/media/alina/Pen/Genome/20219-tomato-snps.vcf.gz'
-
 # @@@@@@@@ LATER: ASK FOR USER INPUT TO GET THE filepath TO THE .vcf
 # filepath = input()
+# @@@@@@@@ LATER: REMOVE THE NEXT LINE
+filepath = '/media/alina/Pen/Genome/20219-tomato-snps.vcf.gz'
+
 
 raw_df = vcf_df.extract_data_from_vcf(filepath)
 data = vcf_df.create_working_dataframe(raw_df)   ##### data IS HERE!!!
 
 # REMOVE THIS? would removing it release memory?
-# del raw_df <<<<<<<<<<<<<<<<<
-
+# del raw_df <<<<<<<<<<<<<<<<< ???
 
 genome_filepath = '/media/hernan/Pen/Genome/GCA_000188115.3_SL3.0_genomic.fna'
 
 data = pd.read_csv('sub_df.csv')    ##### data IS ALSO HERE!!!
+
+# @@@@@@@@ LATER:
+### give the user the option of starting from the .vcf or from the .csv 'sub_df.csv'
+
 
 flanking_seqs = []
 chrom_id = []
@@ -66,7 +67,7 @@ alt = []
 is_snp = []
 
 ### THIS VERSION OF THE PROGRAM GETS ALL FLANKING SEQUENCES,
-### WITHOUTCHECKING IF THEY ARE VALID SNPs OR NOT >>>>>> CHANGE LATER?
+### WITHOUT CHECKING IF THEY ARE VALID SNPs OR NOT >>>>>> CHECK THIS LATER
 
 start = 0
 with open(genome_filepath) as handle:
